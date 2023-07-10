@@ -273,7 +273,6 @@ def init(args_: Args, logger_):
 
     if not args.do_eval and not args.debug and os.path.exists(args.output_dir):
         print('{} {} exists'.format(get_color_text('Warning!'), args.output_dir))
-        input()
 
     if args.do_eval:
         assert os.path.exists(args.output_dir)
