@@ -3,10 +3,11 @@ python src/run.py \
     --use_map \
     --use_centerline \
     --argoverse \
+    --argoverse2 \
     --future_frame_num 60 \
     --do_train \
-    --data_dir /home/DATA/yipin/dataset/Argoverse/motion_forecasting/train/data \
-    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/1 \
+    --data_dir /home/DATA/yipin/dataset/Argoverse2/motion_forecasting/train/data \
+    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av2/densetnt/1 \
     --hidden_size 128 \
     --train_batch_size 64 \
     --reuse_temp_file \
