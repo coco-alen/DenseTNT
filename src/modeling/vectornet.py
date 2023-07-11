@@ -45,7 +45,7 @@ class NewSubGraph(nn.Module):
             # hidden_states = self.layers_2[layer_index](hidden_states)
             # hidden_states = F.relu(hidden_states) + temp
             hidden_states = layer(hidden_states, attention_mask)
-            hidden_states = F.relu(hidden_states)
+            hidden_states = F.gelu(hidden_states)
             hidden_states = hidden_states + temp
             hidden_states = self.layers_2[layer_index](hidden_states)
 

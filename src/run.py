@@ -218,10 +218,12 @@ def demo_basic(rank, world_size, kwargs, queue):
 
         utils.args = args
         model = VectorNet(args).to(rank)
-
+        print(model)
         model = DDP(model, device_ids=[rank], find_unused_parameters=True)
     else:
         model = VectorNet(args).to(rank)
+        print(model)    
+
 
     if 'set_predict' in args.other_params:
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.learning_rate)

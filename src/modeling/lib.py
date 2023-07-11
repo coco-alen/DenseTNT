@@ -37,7 +37,7 @@ class MLP(nn.Module):
     def forward(self, hidden_states):
         hidden_states = self.linear(hidden_states)
         hidden_states = self.layer_norm(hidden_states)
-        hidden_states = torch.nn.functional.relu(hidden_states)
+        hidden_states = torch.nn.functional.gelu(hidden_states)
         return hidden_states
 
 
