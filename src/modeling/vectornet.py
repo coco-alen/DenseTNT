@@ -16,9 +16,8 @@ class NewSubGraph(nn.Module):
         super(NewSubGraph, self).__init__()
         if depth is None:
             depth = args.sub_graph_depth
-        self.layers = nn.ModuleList([MLP(hidden_size, hidden_size // 2) for _ in range(depth)])
-
-        self.layer_0 = MLP(hidden_size)
+        
+        self.layer_0 = MLP(128, hidden_size)
         self.layers = nn.ModuleList([GlobalGraph(hidden_size, num_attention_heads=2) for _ in range(depth)])
         self.layers_2 = nn.ModuleList([LayerNorm(hidden_size) for _ in range(depth)])
         self.layers_3 = nn.ModuleList([LayerNorm(hidden_size) for _ in range(depth)])
@@ -28,13 +27,16 @@ class NewSubGraph(nn.Module):
     def forward(self, input_list: list):
         batch_size = len(input_list)
         device = input_list[0].device
-        hidden_states, lengths = utils.merge_tensors(input_list, device)
+        hidden_states, lengths = utils.merge_tensors(input_list, device, hidden_size=128)
         hidden_size = hidden_states.shape[2]
         max_vector_num = hidden_states.shape[1]
 
         attention_mask = torch.zeros([batch_size, max_vector_num, max_vector_num], device=device)
+
         hidden_states = self.layer_0(hidden_states)
         hidden_states = self.layer_0_again(hidden_states)
+
+
         for i in range(batch_size):
             assert lengths[i] > 0
             attention_mask[i, :lengths[i], :lengths[i]].fill_(1)
@@ -45,7 +47,7 @@ class NewSubGraph(nn.Module):
             # hidden_states = self.layers_2[layer_index](hidden_states)
             # hidden_states = F.relu(hidden_states) + temp
             hidden_states = layer(hidden_states, attention_mask)
-            hidden_states = F.gelu(hidden_states)
+            hidden_states = F.relu(hidden_states)
             hidden_states = hidden_states + temp
             hidden_states = self.layers_2[layer_index](hidden_states)
 
@@ -157,7 +159,6 @@ class VectorNet(nn.Module):
 
         if args.argoverse:
             utils.batch_init(mapping)
-
         element_states_batch, lane_states_batch = self.forward_encode_sub_graph(mapping, matrix, polyline_spans, device, batch_size)
 
         inputs, inputs_lengths = utils.merge_tensors(element_states_batch, device=device)
