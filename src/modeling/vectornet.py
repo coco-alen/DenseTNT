@@ -7,6 +7,7 @@ from torch import nn, Tensor
 
 from modeling.decoder import Decoder, DecoderResCat
 from modeling.lib import MLP, GlobalGraph, LayerNorm, CrossAttention, GlobalGraphRes
+from modeling.linearAttn import LinAngularAttention
 import utils
 
 
@@ -79,8 +80,6 @@ class VectorNet(nn.Module):
             self.global_graph = GlobalGraphRes(hidden_size)
         if 'laneGCN' in args.other_params:
             self.laneGCN_A2L = CrossAttention(hidden_size)
-            self.laneGCN_L2L = GlobalGraphRes(hidden_size)
-            self.laneGCN_L2A = CrossAttention(hidden_size)
 
         self.decoder = Decoder(args, self)
 
@@ -132,12 +131,9 @@ class VectorNet(nn.Module):
                 agents = element_states_batch[i][:map_start_polyline_idx]
                 lanes = element_states_batch[i][map_start_polyline_idx:]
                 # Origin laneGCN contains three fusion layers. Here one fusion layer is enough.
-                if True:
-                    lanes = lanes + self.laneGCN_A2L(lanes.unsqueeze(0), torch.cat([lanes, agents[0:1]]).unsqueeze(0)).squeeze(0)
-                else:
-                    lanes = lanes + self.laneGCN_A2L(lanes.unsqueeze(0), agents.unsqueeze(0)).squeeze(0)
-                    lanes = lanes + self.laneGCN_L2L(lanes.unsqueeze(0)).squeeze(0)
-                    agents = agents + self.laneGCN_L2A(agents.unsqueeze(0), lanes.unsqueeze(0)).squeeze(0)
+
+                lanes = lanes + self.laneGCN_A2L(lanes.unsqueeze(0), torch.cat([lanes, agents[0:1]]).unsqueeze(0)).squeeze(0)
+
                 element_states_batch[i] = torch.cat([agents, lanes])
 
         return element_states_batch, lane_states_batch

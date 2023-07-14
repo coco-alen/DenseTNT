@@ -7,10 +7,9 @@ CUDA_VISIBLE_DEVICES=1 python src/run.py \
     --data_dir /home/DATA/yipin/dataset/Argoverse/motion_forecasting/train/data \
     --data_dir_for_val /home/DATA/yipin/dataset/Argoverse/motion_forecasting/val/data \
     --temp_file_dir /home/DATA/yipin/dataset/Argoverse/motion_forecasting/ \
-    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/bigSize \
-    --hidden_size 512 \
-    --sub_graph_depth 6 \
-    --model_recover_path /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/bigSize/model_save/model.15.bin \
+    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/smallSize \
+    --hidden_size 64 \
+    --sub_graph_depth 3 \
     --eval_batch_size 64 \
     --use_map \
     --use_centerline \
@@ -20,3 +19,5 @@ CUDA_VISIBLE_DEVICES=1 python src/run.py \
     lane_scoring complete_traj complete_traj-3 \
     --do_eval \
     --eval_params optimization MRminFDE cnt_sample=9 opti_time=0.1
+
+    # --model_recover_path /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/bigSize/model_save/model.16.bin \

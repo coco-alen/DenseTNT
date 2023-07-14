@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch import nn, Tensor
 
 import utils
-
+from linearAttn import LinAngularAttention
 
 class LayerNorm(nn.Module):
     r"""
