@@ -1,19 +1,19 @@
 
-python -u src/run.py \
-    --core_num 36 --distributed_training 2 \
-    --master_port 12357 \
+CUDA_VISIBLE_DEVICES=1 python -u src/run.py \
+    --core_num 36 --distributed_training 1 \
+    --master_port 12355 \
     --argoverse \
     --future_frame_num 30 \
     --do_train \
     --data_dir /home/DATA/yipin/dataset/Argoverse/motion_forecasting/train/data \
     --data_dir_for_val /home/DATA/yipin/dataset/Argoverse/motion_forecasting/val/data \
-    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/bigSize \
-    --hidden_size 512 \
+    --output_dir /home/yipin/program/nas/nasTNT/DenseTNT/ckpt/av1/densetnt/smallSize_relu \
+    --hidden_size 64 \
+    --sub_graph_depth 2 \
     --train_batch_size 64 \
     --num_train_epochs 16 \
     --weight_decay 0.01 \
     --learning_rate 0.001 \
-    --sub_graph_depth 6 \
     --use_map \
     --use_centerline \
     --reuse_temp_file \

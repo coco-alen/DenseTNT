@@ -58,6 +58,7 @@ def do_eval(args):
                                                   collate_fn=utils.batch_list_to_batch_tensors,
                                                   pin_memory=False)
     model = VectorNet(args)
+    print(model)
     print('torch.cuda.device_count', torch.cuda.device_count())
 
     logger.info("***** Recover model: %s *****", args.model_recover_path)
