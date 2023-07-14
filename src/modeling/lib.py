@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch import nn, Tensor
 
 import utils
-from linearAttn import LinAngularAttention
+from modeling.linearAttn import LinAngularAttention
 
 class LayerNorm(nn.Module):
     r"""
@@ -159,12 +159,13 @@ class CrossAttention(GlobalGraph):
 class GlobalGraphRes(nn.Module):
     def __init__(self, hidden_size):
         super(GlobalGraphRes, self).__init__()
-        self.global_graph = GlobalGraph(hidden_size, hidden_size // 2)
-        self.global_graph2 = GlobalGraph(hidden_size, hidden_size // 2)
+        # self.global_graph = GlobalGraph(hidden_size, hidden_size // 2)
+        # self.global_graph2 = GlobalGraph(hidden_size, hidden_size // 2)
+        self.global_graph = LinAngularAttention(hidden_size, hidden_size // 2, sparse_reg=utils.args.do_train)
+        self.global_graph2 = LinAngularAttention(hidden_size, hidden_size // 2,  sparse_reg=utils.args.do_train)
 
     def forward(self, hidden_states, attention_mask=None, mapping=None):
-        # hidden_states = self.global_graph(hidden_states, attention_mask, mapping) \
-        #                 + self.global_graph2(hidden_states, attention_mask, mapping)
+
         hidden_states = torch.cat([self.global_graph(hidden_states, attention_mask, mapping),
                                    self.global_graph2(hidden_states, attention_mask, mapping)], dim=-1)
         return hidden_states

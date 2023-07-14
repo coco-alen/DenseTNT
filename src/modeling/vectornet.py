@@ -19,10 +19,10 @@ class NewSubGraph(nn.Module):
             depth = args.sub_graph_depth
         
         self.layer_0 = MLP(128, hidden_size)
-        self.layers = nn.ModuleList([GlobalGraph(hidden_size, num_attention_heads=2) for _ in range(depth)])
+        # self.layers_1 = nn.ModuleList([GlobalGraph(hidden_size, num_attention_heads=2) for _ in range(depth)])
+        self.layers_1 = nn.ModuleList([LinAngularAttention(hidden_size, num_attention_heads=2, sparse_reg=utils.args.do_train) for _ in range(depth)])
         self.layers_2 = nn.ModuleList([LayerNorm(hidden_size) for _ in range(depth)])
-        self.layers_3 = nn.ModuleList([LayerNorm(hidden_size) for _ in range(depth)])
-        self.layers_4 = nn.ModuleList([GlobalGraph(hidden_size) for _ in range(depth)])
+
         self.layer_0_again = MLP(hidden_size)
 
     def forward(self, input_list: list):
@@ -42,7 +42,7 @@ class NewSubGraph(nn.Module):
             assert lengths[i] > 0
             attention_mask[i, :lengths[i], :lengths[i]].fill_(1)
 
-        for layer_index, layer in enumerate(self.layers):
+        for layer_index, layer in enumerate(self.layers_1):
             temp = hidden_states
             # hidden_states = layer(hidden_states, attention_mask)
             # hidden_states = self.layers_2[layer_index](hidden_states)
